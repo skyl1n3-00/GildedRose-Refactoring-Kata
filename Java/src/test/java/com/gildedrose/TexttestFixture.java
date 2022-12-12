@@ -24,7 +24,7 @@ public class TexttestFixture {
 
     GildedRose app = new GildedRose(items);
 
-    int days = 20;
+    int days = 50;
 
     for (int i = 0; i < days; i++) {
       output += "-------- day " + i + " --------\n";
