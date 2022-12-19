@@ -5,6 +5,7 @@ class GildedRose {
     public static final String AGED_BRIE = "Aged Brie";
     public static final String PASSES = "Backstage passes to a TAFKAL80ETC concert";
     public static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
+    public static final int MAX_QUALITY = 50;
     Item[] items;
 
     public GildedRose(Item[] items) {
@@ -20,19 +21,16 @@ class GildedRose {
     private void updateQualityForItem(Item item) {
         switch (item.name) {
             case AGED_BRIE:
-                incrementQuality(item);
+                incrementQuality(item, 1);
                 break;
             case PASSES:
-                if (item.quality < 50) {
-                    item.quality = item.quality + 1;
-
-                    if (item.sellIn < 11) {
-                        incrementQuality(item);
-                    }
-
-                    if (item.sellIn < 6) {
-                        incrementQuality(item);
-                    }
+                if (item.sellIn < 6) {
+                    incrementQuality(item, 3);
+                } else if (item.sellIn < 11) {
+                    incrementQuality(item, 1);
+                    incrementQuality(item, 1);
+                } else {
+                    incrementQuality(item, 1);
                 }
                 break;
             case SULFURAS:
@@ -47,7 +45,7 @@ class GildedRose {
         switch (item.name) {
             case AGED_BRIE:
                 if (item.sellIn < 0) {
-                    incrementQuality(item);
+                    incrementQuality(item, 1);
                 }
                 break;
             case PASSES:
@@ -66,15 +64,15 @@ class GildedRose {
         }
     }
 
+    private void incrementQuality(Item item, int incrementValue) {
+        item.quality = Math.min(item.quality + incrementValue, MAX_QUALITY);
+
+    }
+
     private static void decrementQuality(Item item) {
         if (item.quality > 0) {
             item.quality = item.quality - 1;
         }
     }
 
-    private static void incrementQuality(Item item) {
-        if (item.quality < 50) {
-            item.quality = item.quality + 1;
-        }
-    }
 }
