@@ -1,12 +1,28 @@
 package com.gildedrose;
 
+import static com.gildedrose.GildedRose.Name.AGED_BRIE;
+
 class GildedRose {
 
-    public static final String AGED_BRIE = "Aged Brie";
-    public static final String PASSES = "Backstage passes to a TAFKAL80ETC concert";
-    public static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
     public static final int MAX_QUALITY = 50;
     Item[] items;
+
+    public enum Name {
+        AGED_BRIE ("Aged Brie"),
+        PASSES ("Backstage passes to a TAFKAL80ETC concert"),
+        SULFURAS ("Sulfuras, Hand of Ragnaros"),
+        DEFAULT ("DEFAULT");
+
+        public final String name;
+
+        Name(String name) {
+            this.name = name;
+        }
+        public final String getName () {
+            return name ;
+        }
+
+    }
 
     public GildedRose(Item[] items) {
         this.items = items;
@@ -18,36 +34,32 @@ class GildedRose {
         }
     }
 
+
     private void updateQualityForItem(Item item) {
         item.sellIn = item.sellIn - 1;
-        switch (item.name) {
-            case AGED_BRIE:
+        if (Name.AGED_BRIE.getName().equals(item.name)) {
+            incrementQuality(item, 1);
+            if (item.sellIn < 0) {
                 incrementQuality(item, 1);
-                if (item.sellIn < 0) {
-                    incrementQuality(item, 1);
-                }
-                break;
-            case PASSES:
-                if (item.sellIn < 0) {
-                    item.quality = 0;
-                } else if (item.sellIn < 5) {
-                    incrementQuality(item, 3);
-                } else if (item.sellIn < 10) {
-                    incrementQuality(item, 2);
-                } else {
-                    incrementQuality(item, 1);
-                }
-                break;
-            case SULFURAS:
-                item.sellIn = item.sellIn + 1;
-                // keep it atm
-                break;
-            default:
+            }
+        } else if (Name.PASSES.getName().equals(item.name)) {
+            if (item.sellIn < 0) {
+                item.quality = 0;
+            } else if (item.sellIn < 5) {
+                incrementQuality(item, 3);
+            } else if (item.sellIn < 10) {
+                incrementQuality(item, 2);
+            } else {
+                incrementQuality(item, 1);
+            }
+        } else if (Name.SULFURAS.getName().equals(item.name)) {
+            item.sellIn = item.sellIn + 1;
+            // keep it atm
+        } else {
+            decrementQuality(item);
+            if (item.sellIn < 0) {
                 decrementQuality(item);
-                if (item.sellIn < 0) {
-                    decrementQuality(item);
-                }
-                break;
+            }
         }
     }
 
